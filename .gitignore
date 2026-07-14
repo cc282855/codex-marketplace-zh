@@ -1,0 +1,8 @@
+# Nested working tree: retain locally but never stage it as an embedded repository.
+marketplace/
+
+# Local validation runtime, not project source.
+validation-deps/
+
+# Per-run orchestration records are required at runtime but are not baseline source.
+.codex/state/
