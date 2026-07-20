@@ -1,0 +1,20 @@
+{
+  "name": "codex-marketplace-zh",
+  "interface": {
+    "displayName": "Codex 插件市场中文化 / Codex Plugin Marketplace Chinese"
+  },
+  "plugins": [
+    {
+      "name": "codex-marketplace-zh",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-marketplace-zh"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,33 +1,65 @@
-# Codex 插件市场中文化
+# Codex 插件市场中文化 / Codex Plugin Marketplace Chinese
 
-此目录保存 Codex 官方插件市场的本地中文化副本。它只修改界面中展示的元数据：插件名称、简介、详情、分类、能力和示例提示；不会修改插件标识、连接器配置、权限或功能文件。
+面向 Windows 版 Codex 桌面端的本地插件市场中文化工具。它通过本机调试端口动态翻译插件名称、分类和简介，并调整已安装插件卡片的名称布局；不会修改 Codex 应用包、Marketplace 源文件或已安装插件缓存。
 
-## 已完成
+## 主要功能 / Features
 
-- 180 个插件
-- 998 段英文界面文案翻译为中文
-- 包含本地译文缓存，重复运行时不会重复翻译已处理的文案
+- 将插件名称、分类、短简介和长简介转换为中文。
+- 保留原有中文内容，避免重复翻译。
+- 调整已安装插件的图标与名称布局，使名称固定显示并保持对齐。
+- 使用 `MutationObserver` 跟踪动态渲染的插件列表。
+- 记录运行指标到 `window.__codexMarketplaceZhTelemetry`，便于验证生效状态。
+- Codex 已以调试端口运行时直接连接；普通实例运行时不会强制关闭或重启。
 
-## 让已安装插件名称始终显示
+## 支持环境 / Requirements
 
-双击 `启动中文插件界面.cmd`。它会先重启 Codex，再：
+- Windows 10/11
+- Codex 桌面端
+- Node.js 18 或更高版本
+- 本机端口 `9233` 可用，或已有 Codex 调试实例占用该端口
 
-1. 更新插件市场与已安装插件的中文文案；
-2. 仅在 `127.0.0.1:9222` 上启动 Codex 的本机调试连接；
-3. 为插件页注入样式，让图标下方的名称持续显示。
+## 从 GitHub 安装 / Install from GitHub
 
-启动器只会结束来自 `OpenAI.Codex` 应用包的进程，不会结束其他 Chromium 程序。不要从任务栏固定图标直接启动 Codex；请使用此启动器。每次关闭 Codex 后再次启动时，也应使用该文件。
-
-## 更新市场后重新翻译
-
-在本目录运行：
-
-```powershell
-node .\sync-cn-marketplace.mjs --apply --active
+```text
+codex plugin marketplace add cc282855/codex-marketplace-zh --ref main
+codex plugin add codex-marketplace-zh@codex-marketplace-zh
 ```
 
-该命令会从 Codex 当前的官方市场缓存重新生成中文副本，并将译文同步到市场和已安装插件的运行时缓存。随后完全退出并重新打开 Codex。
+安装或更新后请新建 Codex 任务，让插件 Skill 重新加载。
 
-## 限制
+## 使用方法 / Usage
 
-Codex 当前的 Windows 商店应用没有提供“插件图标下始终显示名称”的设置，且该界面的样式代码位于受系统保护的应用包内。因此此目录不会尝试篡改应用程序或绕过系统保护；该显示方式需要 Codex 客户端本身提供设置或更新支持。
+在 Codex 中调用：
+
+```text
+$translate-plugin-marketplace
+```
+
+也可以从插件根目录直接运行：
+
+```powershell
+node .\scripts\enable-plugin-marketplace-zh.mjs
+```
+
+运行逻辑：
+
+1. 脚本调用插件自带的 `runtime/codex-cn-stable-launcher.mjs`。
+2. 如果调试实例已运行，连接端口并注入中文名称和布局规则。
+3. 如果 Codex 未运行，启动一个带本机调试端口的新实例。
+4. 如果检测到普通 Codex 实例但没有调试端口，脚本会如实退出，不会终止现有会话。
+
+## 安全边界 / Safety
+
+- 不修改 Codex 安装目录或应用包。
+- 不覆盖 Marketplace 配置和插件缓存。
+- 不自动关闭用户正在使用的 Codex 窗口。
+- 页面结构随 Codex 版本变化时可能需要更新选择器；应以实际页面截图和遥测结果确认是否生效。
+
+## 开发验证 / Validation
+
+```powershell
+node --check .\plugins\codex-marketplace-zh\scripts\enable-plugin-marketplace-zh.mjs
+node --check .\plugins\codex-marketplace-zh\runtime\codex-cn-stable-launcher.mjs
+```
+
+仓库技术标识保持英文，插件可见名称使用“中文 / English”双语格式。

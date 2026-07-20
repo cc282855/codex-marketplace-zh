@@ -1,0 +1,4 @@
+interface:
+  display_name: "插件市场中文化 / Marketplace Chinese"
+  short_description: "自动翻译并对齐 Codex 插件市场名称、分类和简介"
+  default_prompt: "使用 $translate-plugin-marketplace 翻译并对齐当前 Codex 插件页面。"
